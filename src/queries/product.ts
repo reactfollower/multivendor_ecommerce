@@ -6,6 +6,8 @@ import { db } from "@/lib/db";
 // Types
 import {
   ProductWithVariantType,
+  VariantImageType,
+  VariantSimplified,
 } from "@/lib/types";
 import { ProductVariant, Size, Store } from "@prisma/client";
 
@@ -23,6 +25,12 @@ import { generateUniqueSlug } from "@/lib/utils";
 import { cookies } from "next/headers";
 import { setMaxListeners } from "events";
 import { Description } from "@radix-ui/react-toast";
+import { SignalZero } from "lucide-react";
+import { sign } from "crypto";
+import { SignedIn } from "@clerk/nextjs";
+import { filterFns } from "@tanstack/react-table";
+import ProductDetails from "@/components/dashboard/forms/product-details";
+import { Variant } from "framer-motion";
 
 export const upsertProduct = async (
     product: ProductWithVariantType,
@@ -77,6 +85,18 @@ export const upsertProduct = async (
         description: product.description,
         slug: productSlug,
         brand: product.brand,
+        specs: {
+          create: product.product_specs.map((spec) => ({
+            name: spec.name,
+            value: spec.value,
+          })),
+        },
+        questions: {
+          create: product.questions.map((question) => ({
+            question: question.question,
+            answer: question.answer
+          })),
+        },
         store: { connect: {id: store.id }},
         category: { connect: {id: product.categoryId }},
         subCategory: { connect: {id: product.subCategoryId }},
@@ -91,6 +111,12 @@ export const upsertProduct = async (
         isSale: product.isSale,
         sku: product.sku,
         keywords: product.keywords.join(","),
+        specs: {
+          create: product.variant_specs.map((spec) => ({
+            name: spec.name,
+            value: spec.value,
+          })),
+        },
         images: {
           create: product.images.map((image) => ({
             url:image.url,
@@ -226,4 +252,92 @@ export const deleteProduct = async (productId: string) => {
     // Delete product from the database
     const response = await db.product.delete({ where: { id: productId }});
     return response;
+};
+
+export const getProducts = async (
+  filters : any = {},
+  sortBy = "",
+  page: number = 1,
+  pageSize: number = 10
+) => {
+    //Default values for page and pageSize
+    const currentPage = page;
+    const limit = pageSize;
+    const skip = (currentPage - 1) * limit;
+
+    // Construct the base
+    const whereClause: any = {
+      AND : [],
+    };
+    
+    // Get all filtered, sorted products
+    const products = await db.product.findMany({
+      where: whereClause,
+      take: limit,
+      skip: skip,
+      include: {
+        variants: {
+          include: {
+            sizes: true,
+            images: true,
+            colors: true,
+          },
+        },
+      },
+    });
+
+    // Retrieve products matching the filters
+    /*
+    const totalCount = await db.product.count({
+    where: whereClause,
+    });
+    */
+
+    // Transform the products with filtered variants into ProductCardType structure
+    const productWithFilteredVariants = products.map(( product ) => {
+      // Filter the variants based on the filters
+      const filteredVariants = product.variants;
+
+      // Transform the filtered variants into the VariantSimplified structure
+      const variants: VariantSimplified[] = filteredVariants.map((variant) => ({
+        variantId: variant.id,
+        variantSlug: variant.slug,
+        variantName: variant.variantName,
+        images: variant.images,
+        sizes: variant.sizes,
+      }));
+
+      // Extract variant images for the product
+      const variantImages: VariantImageType[] = filteredVariants.map((variant) => ({
+        url: `/product/${product.slug}/${variant.slug}`,
+        image: variant.variantImage
+          ? variant.variantImage
+          : variant.images[0].url,
+      }));
+
+      // Return the product in the ProductCardType structure
+      return {
+        id: product.id,
+        slug: product.slug,
+        name: product.name,
+        rating: product.rating,
+        sales: product.sales,
+        variants,
+        variantImages,
+      };
+    });
+
+   const totalCount = products.length;
+
+   // Caculate total pages
+   const totalPages = Math.ceil(totalCount / pageSize);
+
+   // Return the paginated data along with metadata
+   return {
+    products : productWithFilteredVariants,
+    totalPages,
+    currentPage,
+    pageSize,
+    totalCount,
+   };
 };

@@ -33,7 +33,7 @@ export default async function SellerProductPage({
             storeUrl={params.sotreUrl} 
             />
         }
-        newTabLink={`/dashboard/seller/stores/${params.storeUrl}/electrohive/products/new`}
+        newTabLink={`/dashboard/seller/stores/${params.storeUrl}/products/new`}
         filterValue="name"
         data = {products}
         columns = {columns}

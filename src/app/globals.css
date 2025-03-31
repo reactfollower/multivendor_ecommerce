@@ -512,3 +512,9 @@
 .order-area-payment {
   grid-area: payment;
 }
+
+/* User Clerk Button */
+.user-avatar .cl-avatarBox {
+  width: 70px !important;
+  height: 70px !important;
+}

@@ -4,6 +4,8 @@ import { twMerge } from "tailwind-merge"
 import ColorThief from "colorthief";
 
 import { db } from "./db";
+import { Country } from "./types";
+import countries from "@/data/countries.json";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -76,3 +78,36 @@ export const getDominantColors = (imgUrl: string): Promise<string[]> => {
     };
   });
 };
+
+// the helper function to get the user country
+// Define the default country
+const DEFAULT_COUNTRY: Country = {
+  name: "United States",
+  code: "US",
+  city: "",
+  region: "",
+}
+
+export async function getUserCountry(): Promise<Country> {
+  console.log('getusercountry');
+  let userCountry: Country = DEFAULT_COUNTRY;
+  try {
+    // Attempt to detect country by IP
+    const response = await fetch(`https://ipinfo.io/?token=${process.env.IPINFO_TOKEN}`);
+    if (response.ok) {
+      console.log('getcontry!');
+      const data = await response.json();
+      console.log(data);
+      userCountry={
+        name:countries.find((c)=>c.code===data.country)?.name || data.country,
+        code: data.country,
+        city: data.city,
+        region: data.region,
+      };
+    }
+    //console.log(response);
+  } catch (error) {
+    console.log("Failed to fetch IP info", error);
+  }
+  return userCountry;
+}

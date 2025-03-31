@@ -105,3 +105,37 @@ export const deleteSubCategory = async (subCategoryId: string) => {
     return response;
 }
    
+export const getSubCategories = async (
+    limit: number | null,
+    random: boolean = false
+): Promise<SubCategory[]> => {
+    enum SortOrder {
+        asc = "asc",
+        desc = "desc"
+    }
+try {
+     // Define the query options
+     const queryOptions = {
+        take: limit || undefined, //Use the provided limit or undifined for no limit
+        orderBy: random ? { createdAt: SortOrder.desc } : undefined, // Use SortOrder for orderid
+
+     };
+      // If random selection is required, use a raw query to randomize
+      if (random) {
+        const subCategories = await db.$queryRaw<SubCategory[]>`
+        SELECT * FROM SubCategory
+        ORDER BY RAND()
+        LIMIT ${limit || 10}
+        `;
+        return subCategories;
+      } else {
+        // Otherwise, fetch subcategories based on the defined query options
+        const subcategories = await db.subCategory.findMany(queryOptions);
+        return subcategories;
+      }
+} catch (error) {
+    //  Log and re-throw any errors
+    console.error("Error fetching subcatetories:", error);
+    throw error;
+  }
+};

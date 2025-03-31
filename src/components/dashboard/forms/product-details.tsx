@@ -163,9 +163,9 @@ const ProductDetails: FC<ProductDetailsProps> = ({
   >(data?.variant_specs || [{ name: "", value: "" }]);
 
   // State for product variant specs
-  // const [questions, setQuestions] = useState<
-  //   { question: string; answer: string }[]
-  // >(data?.questions || [{ question: "", answer: "" }]);
+  const [questions, setQuestions] = useState<
+    { question: string; answer: string }[]
+  >(data?.questions || [{ question: "", answer: "" }]);
 
   // Form hook for managing form state and validation
   const form = useForm<z.infer<typeof ProductFormSchema>>({
@@ -190,7 +190,7 @@ const ProductDetails: FC<ProductDetailsProps> = ({
       product_specs: data?.product_specs,
       variant_specs: data?.variant_specs,
       keywords: data?.keywords,
-      // questions: data?.questions,
+      questions: data?.questions,
       isSale: data?.isSale || false,
       weight: data?.weight,
       saleEndDate:data?.saleEndDate || format(new Date(), "yyyy-MM-dd'T'HH:mm:ss"),
@@ -273,7 +273,7 @@ const ProductDetails: FC<ProductDetailsProps> = ({
         product_specs: values.product_specs,
         variant_specs: values.variant_specs,
         keywords: values.keywords,
-        // questions: values.questions,
+        questions: values.questions,
         createdAt: new Date(),
         updatedAt: new Date(),
       };
@@ -362,8 +362,8 @@ const ProductDetails: FC<ProductDetailsProps> = ({
     form.setValue("keywords", keywords);
     form.setValue("product_specs", productSpecs);
     form.setValue("variant_specs", variantSpecs);
-    // form.setValue("questions", questions);
-  }, [colors, sizes, keywords, productSpecs, variantSpecs, data]);
+    form.setValue("questions", questions);
+  }, [colors, sizes, keywords, productSpecs, variantSpecs, questions, data]);
 // }, [colors, sizes, keywords, data]);
 
   //Countries options
@@ -903,7 +903,7 @@ const ProductDetails: FC<ProductDetailsProps> = ({
                   </TabsContent>
                 </Tabs>
               </InputFieldset>
-              {/* Questions
+              {/* Questions */}
               {!isNewVariantPage && (
                 <InputFieldset label="Questions & Answers">
                   <div className="w-full flex flex-col gap-y-3">
@@ -924,7 +924,7 @@ const ProductDetails: FC<ProductDetailsProps> = ({
                     )}
                   </div>
                 </InputFieldset>
-              )} */}
+              )}
               {/* Is On Sale */}
               <InputFieldset
                 label="Sale"

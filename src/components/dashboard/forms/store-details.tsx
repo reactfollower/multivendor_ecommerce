@@ -86,7 +86,7 @@ const StoreDetails: FC<StoreDetailsProps> = ({
             logo: values.logo[0].url,
             cover: values.cover[0].url,
             url: values.url,
-            featured: values.featured,
+            featured: values.featured as boolean,
             createdAt: new Date(),
             updatedAt: new Date(),
           });
@@ -102,7 +102,7 @@ const StoreDetails: FC<StoreDetailsProps> = ({
           if (data?.id) {
             router.refresh();
           } else {
-            router.push(`/dashboard/seller/stores/${response.url}`);
+            router.push(`/dashboard/seller/stores/`);
           }
         } catch (error: any) {
           // Handling form submission errors
@@ -269,7 +269,7 @@ const StoreDetails: FC<StoreDetailsProps> = ({
                     <div className="space-y-1 leading-none">
                       <FormLabel>Featured</FormLabel>
                       <FormDescription>
-                        This Store will appear on the home page
+                        This Store will appear on the home page.
                       </FormDescription>
                     </div>
                   </FormItem>

@@ -285,21 +285,22 @@ export const ProductFormSchema = z.object({
         message: "All product variant specs inputs must be filled correctly.",
       }
     ),
-  // questions: z
-  //   .object({
-  //     question: z.string(),
-  //     answer: z.string(),
-  //   })
-  //   .array()
-  //   .min(1, "Please provide at least one product question.")
-  //   .refine(
-  //     (questions) =>
-  //       questions.every((q) => q.question.length > 0 && q.answer.length > 0),
-  //     {
-  //       message: "All product question inputs must be filled correctly.",
-  //     }
-  //   ),
+  questions: z
+    .object({
+      question: z.string(),
+      answer: z.string(),
+    })
+    .array()
+    .min(1, "Please provide at least one product question.")
+    .refine(
+      (questions) =>
+        questions.every((q) => q.question.length > 0 && q.answer.length > 0),
+      {
+        message: "All product question inputs must be filled correctly.",
+      }
+    ),
     saleEndDate: z.string().optional(),
+
   //   freeShippingForAllCountries: z.boolean().default(false),
   // freeShippingCountriesIds: z
   //   .object({
@@ -315,4 +316,67 @@ export const ProductFormSchema = z.object({
   //   )
   //   .default([]),
   // shippingFeeMethod: z.nativeEnum(ShippingFeeMethod),
+});
+
+export const StoreShippingFormSchema = z.object({
+  defaultShippingService: z
+  .string({
+    required_error: "Shipping service name is required.",
+  })
+  .min(2, "Shipping service name must be at least 2 characters long.")
+  .max(50, { message: "Shipping service name cannot exceed 50 characters."}),
+  defaultShippingFeePerItem: z.number(),
+  defaultShippingFeeForAdditionalItem: z.number(),
+  defaultShippingFeePerKg: z.number(),
+  defaultShippingFeeFixed: z.number(),
+  defaultDeliveryTimeMin: z.number(),
+  defaultDeliveryTimeMax: z.number(),
+  returnPolicy: z.string().min(1, "Return policy is required"),
+});
+
+export const ShippingRateFormSchema = z.object({
+  shippingService: z
+    .string({
+      required_error: "Shipping service name is required.",
+      invalid_type_error: "Shipping service name must be a string.",
+    })
+    .min(2, {
+      message: "Shipping service name must be at least 2 characters long.",
+    })
+    .max(50, { message: "Shipping service name cannot exceed 50 characters." }),
+  countryId: z.string().uuid().optional(),
+  countryName: z.string().optional(),
+  shippingFeePerItem: z.number(),
+  shippingFeeForAdditionalItem: z.number(),
+  shippingFeePerKg: z.number(),
+  shippingFeeFixed: z.number(),
+  deliveryTimeMin: z.number(),
+  deliveryTimeMax: z.number(),
+  returnPolicy: z.string().min(1, "Return policy is required."),
+});
+
+// OfferTag form schema
+export const OfferTagFormSchema = z.object({
+  name: z
+    .string({
+      required_error: "Category name is required.",
+      invalid_type_error: "Category nale must be a string.",
+    })
+    .min(2, { message: "Category name must be at least 2 characters long." })
+    .max(50, { message: "Category name cannot exceed 50 characters." })
+    .regex(/^[a-zA-Z0-9\s&$.%,']+$/, {
+      message:
+        "Only letters, numbers, and spaces are allowed in the category name.",
+    }),
+  url: z
+    .string({
+      required_error: "Category url is required",
+      invalid_type_error: "Category url must be a string",
+    })
+    .min(2, { message: "Category url must be at least 2 characters long." })
+    .max(50, { message: "Category url cannot exceed 50 characters." })
+    .regex(/^(?!.*(?:[-_ ]){2,})[a-zA-Z0-9_-]+$/, {
+      message:
+        "Only letters, numbers, hyphen, and underscore are allowed in the category url, and consecutive occurrences of hyphens, underscores, or spaces are not permitted.",
+    }),
 });
