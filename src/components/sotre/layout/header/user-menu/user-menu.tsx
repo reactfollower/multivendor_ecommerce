@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { OrderIcon, MessageIcon, WishlistIcon } from "@/components/sotre/icons";
 import { Button } from "@/components/sotre/ui/button";
@@ -11,7 +12,12 @@ import Link from "next/link";
 
 export default async function UserMenu() {
   // Get the current user
-  const user = await currentUser();
+  let user = null;
+  try{
+  user = await currentUser();
+  }catch(error){
+  
+  }
   return (
     <div className="relative group px-2">
       {/* Trigger */}

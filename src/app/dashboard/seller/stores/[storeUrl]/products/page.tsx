@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // Queries
 import DataTable from "@/components/ui/data-table";
 import { getAllStoreProducts } from "@/queries/product";
@@ -10,12 +11,14 @@ import { getAllOfferTags } from "@/queries/offer-tag";
 export default async function SellerProductPage({
     params,
 }:{
-    params: {
-        storeUrl: string; sotreUrl: string 
-};
+    //params: {
+        // storeUrl: string; sotreUrl: string 
+        params: Promise<{storeUrl: string }>;
+//};
 }) {
     // Fetching products data from the database for the active store
-    const products = await getAllStoreProducts(params.storeUrl);
+    const {storeUrl} = await params;
+    const products = await getAllStoreProducts(storeUrl);
     const categories = await getAllCategories();
     const offerTags = await getAllOfferTags();
     return (
@@ -30,10 +33,10 @@ export default async function SellerProductPage({
           <ProductDetails 
             categories={categories} 
             offerTags={offerTags} 
-            storeUrl={params.sotreUrl} 
+            storeUrl={storeUrl} 
             />
         }
-        newTabLink={`/dashboard/seller/stores/${params.storeUrl}/products/new`}
+        newTabLink={`/dashboard/seller/stores/${storeUrl}/products/new`}
         filterValue="name"
         data = {products}
         columns = {columns}

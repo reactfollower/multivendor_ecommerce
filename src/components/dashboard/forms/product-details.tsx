@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 // React, Next.js
@@ -243,7 +245,10 @@ const ProductDetails: FC<ProductDetailsProps> = ({
 
   const handleSubmit1 = async (error: any) => {
     alert('1');
+    console.log("errror");
+    console.log(error.stack);
     console.log(error);
+    console.log("errror end");
   }
   // Submit handler for form submission
   const handleSubmit2 = async (values: z.infer<typeof ProductFormSchema>) => {

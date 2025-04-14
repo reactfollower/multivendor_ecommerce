@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use server"
 
 import { db } from "@/lib/db";
@@ -59,21 +60,23 @@ export const upsertStore = async (store: Partial<Store>) => {
         throw new Error(errorMessage);
       }
     //   console.log('store', store);
-    //   // Upsert store details into the database
-    //   const storeDetails = await db.store.upsert({
-    //     where: {
-    //         id: store.id,
-    //     },
-    //     update: store,
-    //     create: {
-    //         ...store,
-    //         user: {
-    //             connect: { id: user.id },
-    //         },
-    //     },
-    //   });
+    // Upsert store details into the database
+    
+    const storeDetails = await db.store.upsert({
+      where: {
+        id: store.id,
+      },
+      update: store,
+      create: {
+        ...store,
+        user: {
+          connect: { id: user.id },
+        },
+      },
+    });
 
-    //   return storeDetails;
+    return storeDetails;
+  
     } catch (error) {
         console.log(error);
         throw error;

@@ -1,7 +1,7 @@
-import { getAllStoreProducts, getProducts } from "@/queries/product";
+import { getAllStoreProducts, getProductPageData, getProducts, getRatingStatistics, getShippingDetails, retrieveProductDetails } from "@/queries/product";
 import { getStoreDefaultShippingDetails } from "@/queries/store";
 import { getAllSubCategories } from "@/queries/subCategory";
-import { Prisma, ProductVariantImage, ShippingRate, Size } from "@prisma/client";
+import { FreeShipping, FreeShippingCountry, Prisma, ProductVariantImage, Review, ReviewImage, ShippingRate, Size, User } from "@prisma/client";
 
 export interface DashboardSidebarMenuInterface {
     label: string;
@@ -88,3 +88,57 @@ export interface DashboardSidebarMenuInterface {
         url : string;
         image: string;
       };
+
+      export type ProductPageType = Prisma.PromiseReturnType<
+         typeof retrieveProductDetails
+         >;
+
+      export type ProductPageDataType = Prisma.PromiseReturnType<
+        typeof getProductPageData
+        >;
+
+     export type productShippingDetailsType = Prisma.PromiseReturnType<
+     typeof getShippingDetails
+     >;
+       
+     export type StatisticsCardType = Prisma.PromiseReturnType<
+     typeof getRatingStatistics
+     >["ratingStatistics"];
+
+     export type RatingStatisticsType = Prisma.PromiseReturnType<
+     typeof getRatingStatistics
+     >;
+
+     export type FreeShippingWithCountriesType = FreeShipping & {
+      eligibaleCountries: FreeShippingCountry[];
+     };
+     
+     export type CartProductType = {
+      productId: string;
+      variantId: string;
+      productSlug: string;
+      variantSlug: string;
+      name: string;
+      variantName: string;
+      image: string;
+      variantImage: string;
+      sizeId: string;
+      size: string;
+      quantity: number;
+      price: number;
+      stock: number;
+      weight: number;
+      shippingMethod: string;
+      shippingService: string;
+      shippingFee: number;
+      extraShippingFee: number;
+      deliveryTimeMin: number;
+      deliveryTimeMax: number;
+      isFreeShipping: boolean;
+    };
+
+    export type ReivewWithImageType = Review & {
+      images: ReviewImage[];
+      user: User[];
+    };
+    

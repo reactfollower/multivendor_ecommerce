@@ -24,7 +24,7 @@ export default function CountryLanguageCurrencySelector({
     const handleCountryClick = async (country: string) => {
         // Find the country data based on the selected country name
         const countryData = countries.find((c) => c.name === country);
-
+         console.log("countryData is ", countryData);
         if (countryData) {
             const data: Country = {
                 name: countryData.name,

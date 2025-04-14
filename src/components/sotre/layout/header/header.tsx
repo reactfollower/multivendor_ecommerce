@@ -22,7 +22,9 @@ export default async function Header() {
 
   // If cookie exists, update the user country
   if (userCountryCookie) {
-    userCountry = JSON.parse(userCountryCookie.value) as Country;
+    try{
+      userCountry = JSON.parse(userCountryCookie.value) as Country;
+    }catch(e) {userCountry= {name: "United States", code: "US" };}
   }
   
     return (

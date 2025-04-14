@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import Image from "next/image";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay } from "swiper/modules";
@@ -29,7 +30,7 @@ export default function ProductCardImageSwiper({
          <Swiper ref={swiperRef} modules={[Autoplay]} autoplay={{ delay: 500}}>
          {
             images.map((img)=>(
-                <SwiperSlide>
+                <SwiperSlide key={img.url}>
                     <Image 
                       src={img.url} 
                       alt="" 
