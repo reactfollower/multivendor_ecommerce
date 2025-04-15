@@ -15,6 +15,8 @@ interface Props {
 const ProductReviews: FC<Props> = ({ productId, rating, statistics, reviews }) => {
     const [data, setData] = useState<ReivewWithImageType[]>(reviews);
     const {totalReviews, ratingStatistics } = statistics;
+    const half = Math.ceil(data.length / 2);
+
     return (
         <div id="reviews" className="pt-6">
             {/*Title*/}
@@ -37,13 +39,24 @@ const ProductReviews: FC<Props> = ({ productId, rating, statistics, reviews }) =
                     {/** Review sort */}
                   </div>
                   {/** Reivews */}
-                  <div className="mt-10 min-h-72 grid grid-cols-2 gap-6">
+                  <div className="mt-10 min-h-72 grid grid-cols-2 gap-4">
                     {
                         data.length>0 ? (
                             <>
-                              {data.map((review) => (
+                            <div className="flex flex-col gap-3">
+                              {data
+                                 .slice(0, half)
+                                 .map((review) => (
                                 <ReviewCard key={review.id} review={review} />
                               ))}
+                              </div>
+                              <div className="flex flex-col gap-3">
+                              {data
+                                 .slice(half)
+                                 .map((review) => (
+                                <ReviewCard key={review.id} review={review} />
+                              ))}
+                              </div>
                             </>
                         ) : (
                             <>No Reviews.</>

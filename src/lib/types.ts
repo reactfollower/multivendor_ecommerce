@@ -142,3 +142,5 @@ export interface DashboardSidebarMenuInterface {
       user: User[];
     };
     
+    export type SortOrder = "asc" | "desc";
+    
