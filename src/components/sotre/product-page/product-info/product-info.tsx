@@ -1,7 +1,7 @@
 "use client"
 import { CartProductType, ProductPageDataType } from "@/lib/types";
 import Link from "next/link";
-import { FC } from "react";
+import { Dispatch, FC, SetStateAction } from "react";
 import Image from "next/image";
 import CopyIcon from "../../icons/copy";
 import toast from "react-hot-toast";
@@ -13,12 +13,15 @@ import ColorWheel from "@/components/shared/color-wheel";
 import ProductVariantSelector from "./variant-selector";
 import SizeSelector from "./size-selector";
 import ProductAssurancePolicy from "./assurance-policy";
+import { ProductVariantImage } from "@prisma/client";
 
 interface Props {
     productData: ProductPageDataType;
     quantity?: number;
     sizeId: string | undefined;
     handleChange: (property: keyof CartProductType, value: any) => void;
+    setVariantImages: Dispatch<SetStateAction<ProductVariantImage[]>>;
+    setActiveImage:Dispatch<SetStateAction<ProductVariantImage | null>>;
 }
 
 const ProductInfo: FC<Props> = ({ 
@@ -26,6 +29,8 @@ const ProductInfo: FC<Props> = ({
       quantity, 
       sizeId, 
       handleChange,
+      setVariantImages,
+      setActiveImage,
  }) => {
     // Check if productData exists, return null if is's missing (prevents rendering when)
     if (!productData) return null;
@@ -35,7 +40,7 @@ const ProductInfo: FC<Props> = ({
             name, 
             sku, 
             colors,
-            variantImages, 
+            variantInfo, 
             sizes, 
             isSale, 
             saleEndDate, 
@@ -46,7 +51,7 @@ const ProductInfo: FC<Props> = ({
     } = productData;
  
     const {totalReviews } = reviewStatistics;
-
+    console.log("product data", productData.store);
     // Function to copy the SKU to the clibboard
     const copySkuToClipboard = async () => {
         try {
@@ -137,10 +142,12 @@ const ProductInfo: FC<Props> = ({
         </div>
         <div className="mt-4">
            {
-             variantImages.length > 0 && (
+             variantInfo.length > 0 && (
                 <ProductVariantSelector 
-                  variants={variantImages}
+                  variants={variantInfo}
                   slug={productData.variantSlug}
+                  setVariantImages={setVariantImages}
+                  setActiveImage={setActiveImage}
                 />
             )}
         </div>

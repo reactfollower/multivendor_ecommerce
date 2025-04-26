@@ -56,7 +56,7 @@ export async function POST(req: Request) {
  if (evt.type === "user.created" || evt.type === "user.updated") {
   console.log("******************************************************************");
     const data = JSON.parse(body).data;
-    //console.log(data);
+    console.log(data);
     const user: Partial<User> = {
         id: data.id,
         name: `${data.first_name} ${data.last_name}`,
@@ -83,8 +83,8 @@ export async function POST(req: Request) {
  
 
  //Update user's metadata in Clerk with the role information
-    const client = await clerkClient();
-    await client.users.updateUserMetadata(data.id, {
+    const client = await clerkClient(); 
+     await client.users.updateUserMetadata(data.id, {
       privateMetadata: {
         role: dbUser.role || "USER", // Default role to "USER" if not present in dbUser
       },

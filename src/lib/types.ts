@@ -1,7 +1,7 @@
 import { getAllStoreProducts, getProductPageData, getProducts, getRatingStatistics, getShippingDetails, retrieveProductDetails } from "@/queries/product";
 import { getStoreDefaultShippingDetails } from "@/queries/store";
 import { getAllSubCategories } from "@/queries/subCategory";
-import { FreeShipping, FreeShippingCountry, Prisma, ProductVariantImage, Review, ReviewImage, ShippingRate, Size, User } from "@prisma/client";
+import { Color, FreeShipping, FreeShippingCountry, Prisma, ProductVariantImage, Review, ReviewImage, ShippingRate, Size, User } from "@prisma/client";
 
 export interface DashboardSidebarMenuInterface {
     label: string;
@@ -143,4 +143,54 @@ export interface DashboardSidebarMenuInterface {
     };
     
     export type SortOrder = "asc" | "desc";
+    
+
+    export type ReviewsOrderType = {
+      orderBy: "latest" | "oldest" | "highest";
+    };
+
+    export type ReviewsFiltersType = {
+      rating?: number;
+      hasImages?: boolean;
+    };
+
+    export type ReviewDetailsType = {
+      id: string;
+      review: string;
+      rating: number;
+      images: {url: string}[];
+      size: string;
+      quantity: string;
+      variant: string;
+      color: string;
+    };
+
+    export type VariantInfoType = {
+      variantName: string;
+      variantSlug: string;
+      variantImage: string;
+      variantUrl: string;
+      images: ProductVariantImage[];
+      sizes: Size[];
+      colors: Partial<Color>[];
+    };
+    
+    export type ProductVariantDataType = {
+      id: string;
+      variantName: string;
+      slug: string;
+      sku: string;
+      variantImage: string;
+      weight: number;
+      isSale: boolean;
+      saleEndDate: string | null;
+      variantDescription: string | null;
+      images: {
+        url: string;
+      }[];
+      sizes: Size[];
+      specs: Spec[];
+      colors: { name: string }[];
+      keywords: string;
+    };
     

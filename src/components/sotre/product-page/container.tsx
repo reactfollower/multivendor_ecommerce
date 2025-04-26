@@ -10,6 +10,7 @@ import ReturnPrivacySecurityCard from "./returns-security-privacy-cart";
 import { cn, isProductValidToAdd } from "@/lib/utils";
 import QuantitySelector from "./quantity-selector";
 import SocialShare from "../shared/social-share";
+import { ProductVariantImage } from "@prisma/client";
 
 interface Props {
     productData: ProductPageDataType;
@@ -23,6 +24,12 @@ const ProductPageContainer: FC<Props> = ( { productData, sizeId, children }) => 
     const { images, shippingDetails, sizes } = productData;
     if (typeof shippingDetails === "boolean") return null;
     
+    const [variantImages, setVariantImages] = useState<ProductVariantImage[]>(images)
+
+    const [activeImage, setActiveImage] = useState<ProductVariantImage | null>(
+        images[0]
+    )
+
     // Initialize the default product data for the cart item
     const data: CartProductType={
         productId: productData.productId,
@@ -67,24 +74,23 @@ const ProductPageContainer: FC<Props> = ( { productData, sizeId, children }) => 
         setIsProductValid(check);
     },[productToBeAddedToCart]);
 
-    //console.log("productToBeAddedToCart--->", productToBeAddedToCart.stock);
-    console.log(
-        "qty,stock --->",
-        productToBeAddedToCart.quantity,
-        productToBeAddedToCart.stock
-     );
-
     return (
         <div className="relative">
             <div className="w-full xl:flex xl:gap-4">
                 {/* Product iamges swiper */}
-                <ProductSwiper images={images} />
+                <ProductSwiper 
+                  images={variantImages.length > 0 ? variantImages:images} 
+                  activeImage={activeImage || images[0]}
+                  setActiveImage={setActiveImage}
+                />
                 <div className="w-full mt-4 md:mt-0 flex flex-col gap-4 md:flex-row">
                     {/* Product main info */}
                     <ProductInfo 
                       productData={productData} 
                       sizeId={sizeId} 
                       handleChange={handleChange}
+                      setVariantImages={setVariantImages}
+                      setActiveImage={setActiveImage}
                       />
 
                     {/**Shipping details - buy actions buttons */}

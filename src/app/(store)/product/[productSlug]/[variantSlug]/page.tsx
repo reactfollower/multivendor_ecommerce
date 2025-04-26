@@ -5,6 +5,7 @@ import ProductQuestions from "@/components/sotre/product-page/product-questions"
 import ProductSpecs from "@/components/sotre/product-page/product-specs";
 import ProductDescription from "@/components/sotre/product-page/production-description";
 import RelatedProducts from "@/components/sotre/product-page/related-product";
+import AddReview from "@/components/sotre/product-page/reviews/add-review";
 import ProductReviews from "@/components/sotre/product-page/reviews/product-reviews";
 import StoreProducts from "@/components/sotre/product-page/store-products";
 import { getProductPageData, getProducts } from "@/queries/product";
@@ -63,7 +64,7 @@ export default async function ProductVariantPage({
         );
     }
 
-    const {specs, questions, shippingDetails, category, subCategory, store, reviewStatistics, reviews } = productData;
+    const {specs, questions, category,  store, reviewStatistics, reviews, variantInfo } = productData;
 
     const relatedProducts = await getProducts({category: category.url }, "",1,12);
 
@@ -85,6 +86,7 @@ export default async function ProductVariantPage({
                       statistics={reviewStatistics}
                       reviews = {reviews}
                       />
+                      
                     <>
                     <Separator className="mt-6" />
                     {/* Product description */}

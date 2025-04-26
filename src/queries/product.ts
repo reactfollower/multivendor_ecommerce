@@ -532,7 +532,7 @@ export const retrieveProductDetails = async (
           images: true,
           user: true,
         },
-        take: 2,
+        take: 4,
       },
       freeShipping:{
         include:{
@@ -555,23 +555,31 @@ export const retrieveProductDetails = async (
 
   if (!product) return null;
   // Get variant images
-  const variantImages = await db.productVariant.findMany({
+  const variantInfo = await db.productVariant.findMany({
     where: {
       productId: product.id,
     },
-    select : {
-      slug: true,
-      variantImage: true,
+    include: {
+      images: true,
+      sizes: true,
+      colors: true,
+      product: {
+        select: { slug: true },
+      },
     },
   });
   // console.log("variantImages", variantImages);
     
   return {
-    ...product,
-    variantImages: variantImages.map((v) => ({
-      url: `/product/${productSlug}/${v.slug}`,
-      img: v.variantImage,
-      slug: v.slug,
+    ...product, 
+    variantInfo: variantInfo.map((variant) => ({
+      variantName: variant.variantName,
+      variantSlug: variant.slug,
+      variantUrl: `/product/${productSlug}/${variant.slug}`,
+      variantImage: variant.variantImage,
+      images: variant.images,
+      sizes: variant.sizes,
+      colors: variant.colors.map((color) => color.name).join(","),
     })),
   }
 };
@@ -639,7 +647,7 @@ const formatProductResponse=(product: ProductPageType, shippingDetails:productSh
     reviewStatistics:ratingStatistics,
     shippingDetails,
     relatedProducts: [],
-    variantImages: product.variantImages,
+    variantInfo: product.variantInfo,
   };
 };
 
